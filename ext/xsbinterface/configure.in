@@ -1,0 +1,63 @@
+AC_INIT(xsbinterface)
+
+# Just some custom macros for doing errors...
+AC_DEFUN([AC_MISSING_ERROR],
+[AC_MSG_ERROR([Missing $1!])])
+
+# The usual suspects...
+AC_CONFIG_FILES([Makefile])
+AC_PROG_CC
+
+# Check for the XSB headers
+#AC_CHECK_HEADER(xsb/cinterf.h,,AC_MISSING_ERROR(xsb/cinterf.h))
+#AC_CHECK_HEADER(xsb/xsb_config.h,,AC_MISSING_ERROR(xsb/xsb_config.h))
+#AC_CHECK_HEADER(xsb/string_xsb.h,,AC_MISSING_ERROR(xsb/string_xsb.h))
+AC_CHECK_HEADER(xsb/cinterf.h)
+AC_CHECK_HEADER(xsb/xsb_config.h)
+AC_CHECK_HEADER(xsb/string_xsb.h)
+
+# Check for the xsb module object
+AC_CHECK_FILE([/usr/local/lib/xsb/xsb.o],
+[xsb_mod_file=[/usr/local/lib/xsb/xsb.o]],
+AC_CHECK_FILE([/usr/lib/xsb/xsb.o],[xsb_mod_file=[/usr/lib/xsb/xsb.o]],[AC_MISSING_ERROR([XSBModule])]))
+
+# Library checking....
+AC_CHECK_LIB([dl], [dlopen], [LIBS="-ldl $LIBS"], AC_MISSING_ERROR([libdl]))
+AC_CHECK_LIB([m], [pow], [LIBS="-lm $LIBS"], AC_MISSING_ERROR(libm))
+AC_CHECK_LIB([pthread], [pthread_create], [LIBS="-lpthread $LIBS"])
+
+# Check for xsb itself!
+AC_PATH_PROG(xsb_loc, xsb, "FAILURE")
+(echo "$xsb_loc" | grep -q FAILURE) && AC_MISSING_ERROR([XSB Executable])
+
+if (echo "$xsb_loc" | grep -q config); then
+  AC_DEFINE([_XSB_PATH_DEPTH], 4)
+else
+  AC_DEFINE([_XSB_PATH_DEPTH], 2)
+fi
+
+# Some final checking to see what our command line options are (linux VS. mac)
+
+AC_MSG_CHECKING([build environment type])
+if (echo "$CC" | grep -q darwin); then
+  LDWOPTS="-dynamic -bundle"
+  lib_ext="bundle"
+  AC_MSG_RESULT(DARWIN)
+else 
+  if (gcc -v 2>&1 | grep -q darwin); then
+    LDWOPTS="-dynamic -bundle"
+    lib_ext="bundle"
+    AC_MSG_RESULT(DARWIN (WITH BUSTED AUTOCONF))
+  else
+    CC="$CC -shared"
+    LDWOPTS="-Wl,\"--no-undefined\",\"-dy\""
+    lib_ext="so"
+    AC_MSG_RESULT(*nix)
+  fi
+fi
+
+LDFLAGS="$LDFLAGS $LDWOPTS"
+# Create my files!
+AC_SUBST(lib_ext)
+AC_SUBST(xsb_mod_file)
+AC_OUTPUT

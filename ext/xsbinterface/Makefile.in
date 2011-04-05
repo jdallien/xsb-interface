@@ -1,0 +1,23 @@
+CC=@CC@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+
+DEFS=@DEFS@
+SRCS=xsbinterface.c
+OBJS=xsbinterface.o @xsb_mod_file@
+
+# My targets
+
+all : default install
+
+default : compile link
+
+compile : xsbinterface.c
+	${CC} ${CFLAGS} -c -o xsbinterface.o ${DEFS} ${SRCS}
+
+link : xsbinterface.o
+	${CC} ${LDFLAGS} -o xsbinterface.@lib_ext@ ${OBJS} ${LIBS}
+
+install: xsbinterface.@lib_ext@
+	cp -f xsbinterface.@lib_ext@ ../../lib/
