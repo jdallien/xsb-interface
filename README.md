@@ -10,8 +10,8 @@ Installation
  * Install XSB 3.0.1
  * Include the path to the XSB executable prior to installing the gem:
 
-    export PATH=$PATH:/usr/local/XSB/3.0.1/bin
-    gem install xsb-interface
+     export PATH=$PATH:/usr/local/XSB/3.0.1/bin
+     gem install xsb-interface
 
 Known Issues
 ------------
