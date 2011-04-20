@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.email = %q{jdallien@mdlogix.com}
   s.extensions = ["ext/xsbinterface/extconf.rb"]
   s.files = ["lib/xsb.rb", "lib/conn_pool.rb", "ext/xsbinterface/xsbinterface.c", "ext/xsbinterface/extconf.rb", "ext/xsbinterface/configure.in", "ext/xsbinterface/Makefile.in", "tests/xsb_test.rb", "Rakefile"]
-  s.has_rdoc = true
   s.homepage = %q{http://www.mdlogix.com}
   s.rdoc_options = ["--line-numbers", "-Y", "lib/xsb.rb"]
   s.require_paths = ["lib", "lib", "ext"]
