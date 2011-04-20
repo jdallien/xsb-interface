@@ -7,7 +7,7 @@ class XSBInterfaceTest < Test::Unit::TestCase
   def setup
     @my_interface = XSB::Interface.new(true)
   end
-
+  
   def teardown
     @my_interface.xsb_terminate
   end

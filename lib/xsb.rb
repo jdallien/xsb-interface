@@ -86,9 +86,9 @@ module XSB
     def connected?
       @connection_active
     end
-
-    private
-
+    
+    private 
+    
     attr_accessor :connection_active
   end
 end

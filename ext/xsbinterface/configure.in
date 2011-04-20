@@ -2,33 +2,35 @@ AC_INIT(xsbinterface)
 
 # Just some custom macros for doing errors...
 AC_DEFUN([AC_MISSING_ERROR],
-[AC_MSG_ERROR([Missing $1!])])
+           [ { AC_MSG_ERROR([Missing $1!]) } ])
 
 # The usual suspects...
 AC_CONFIG_FILES([Makefile])
 AC_PROG_CC
 
 # Check for the XSB headers
-#AC_CHECK_HEADER(xsb/cinterf.h,,AC_MISSING_ERROR(xsb/cinterf.h))
-#AC_CHECK_HEADER(xsb/xsb_config.h,,AC_MISSING_ERROR(xsb/xsb_config.h))
-#AC_CHECK_HEADER(xsb/string_xsb.h,,AC_MISSING_ERROR(xsb/string_xsb.h))
-AC_CHECK_HEADER(xsb/cinterf.h)
-AC_CHECK_HEADER(xsb/xsb_config.h)
-AC_CHECK_HEADER(xsb/string_xsb.h)
+AC_CHECK_HEADER(xsb/cinterf.h,,AC_MISSING_ERROR(xsb/cinterf.h))
+AC_CHECK_HEADER(xsb/xsb_config.h,,AC_MISSING_ERROR(xsb/xsb_config.h))
+AC_CHECK_HEADER(xsb/string_xsb.h,,AC_MISSING_ERROR(xsb/string_xsb.h))
 
 # Check for the xsb module object
-AC_CHECK_FILE([/usr/local/lib/xsb/xsb.o],
-[xsb_mod_file=[/usr/local/lib/xsb/xsb.o]],
-AC_CHECK_FILE([/usr/lib/xsb/xsb.o],[xsb_mod_file=[/usr/lib/xsb/xsb.o]],[AC_MISSING_ERROR([XSBModule])]))
+AC_CHECK_FILE(/usr/local/lib/xsb/xsb.o,
+              [xsb_mod_file="/usr/local/lib/xsb/xsb.o"],
+              AC_CHECK_FILE(/usr/lib/xsb/xsb.o,[xsb_mod_file="/usr/lib/xsb/xsb.o"],AC_MISSING_ERROR(XSB Module)))
 
 # Library checking....
-AC_CHECK_LIB([dl], [dlopen], [LIBS="-ldl $LIBS"], AC_MISSING_ERROR([libdl]))
+AC_CHECK_LIB([odbc],[SQLConnect],[LIBS="-lodbc $LIBS"])
+AC_CHECK_LIB([dl], [dlopen], [LIBS="-ldl $LIBS"], AC_MISSING_ERROR(libdl))
 AC_CHECK_LIB([m], [pow], [LIBS="-lm $LIBS"], AC_MISSING_ERROR(libm))
 AC_CHECK_LIB([pthread], [pthread_create], [LIBS="-lpthread $LIBS"])
 
+# This will be used if it ever becomes a full fledged ruby extension
+# AC_CHECK_LIB([ruby],[RUBY_METH_FUNC],[LIBS="-lruby $LIBS"], AC_MISSING_ERROR(ruby))
+# AC_CHECK_HEADER(ruby.h,,AC_MISSING_ERROR(ruby.h))
+
 # Check for xsb itself!
 AC_PATH_PROG(xsb_loc, xsb, "FAILURE")
-(echo "$xsb_loc" | grep -q FAILURE) && AC_MISSING_ERROR([XSB Executable])
+(echo "$xsb_loc" | grep -q FAILURE) && AC_MISSING_ERROR(XSB Executable)
 
 if (echo "$xsb_loc" | grep -q config); then
   AC_DEFINE([_XSB_PATH_DEPTH], 4)
