@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = nil if s.respond_to? :required_rubygems_version=
   s.authors = ["Medical Decision Logic"]
-  s.cert_chain = nil
   s.date = %q{2008-11-21}
   s.email = %q{jdallien@mdlogix.com}
   s.extensions = ["ext/xsbinterface/extconf.rb"]
